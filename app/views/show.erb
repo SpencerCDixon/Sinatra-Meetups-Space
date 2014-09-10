@@ -1,0 +1,14 @@
+<h1><%= @meetup.name %></h1>
+<% if joined_meetup?(params[:id], current_user.uid) %>
+  <h2>Joined!</h2>
+<% end %>
+<p><%= @meetup.description %> at <%= @meetup.location %></p>
+<form action="/meetup/<%= @meetup.id %>/join" method="POST"><button style = "color: black;"> Join this meetup!</button>
+<h2>Comments</h2>
+<form action='/comments/new' method='POST'>
+  <input type='Text' name='Title' size='' placeholder='Title' >
+  <input type='Text' name='Body' size='' placeholder='Body' >
+  <button type='submit'>Submit</button>
+</form>
+
+<ol></ol>

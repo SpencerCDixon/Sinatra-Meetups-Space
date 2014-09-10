@@ -2,7 +2,8 @@ require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/flash'
 require 'omniauth-github'
-
+require 'sinatra/reloader'
+require 'pry'
 require_relative 'config/application'
 
 Dir['app/**/*.rb'].each { |file| require_relative file }
@@ -15,6 +16,10 @@ helpers do
 
   def signed_in?
     current_user.present?
+  end
+
+  def joined_meetup?(meetup_id, user_id)
+    JoinedMeetup.find_by(meetup_id: meetup_id, uid: user_id)
   end
 end
 
@@ -30,7 +35,31 @@ def authenticate!
 end
 
 get '/' do
+  @title = "All Meetups"
+  @meetups = Meetup.all
   erb :index
+end
+
+get '/meetup/:id' do
+  @meetup = Meetup.find(params[:id])
+  @members = []
+  @members << JoinedMeetup.where(meetup_id: params[:id])
+  erb :show
+  binding.pry
+end
+
+post '/meetup/:id/join' do
+  JoinedMeetup.create(meetup_id: params[:id], uid: current_user.uid)
+  redirect "/meetup/#{params[:id]}"
+end
+
+get '/create_meetup' do
+  erb :create_meetup
+end
+
+post '/create_meetup' do
+  Meetup.create(params)
+  redirect '/'
 end
 
 get '/auth/github/callback' do
