@@ -18,7 +18,7 @@ ActiveRecord::Schema.define(version: 20140910170550) do
 
   create_table "comments", force: true do |t|
     t.integer  "meetup_id",  null: false
-    t.integer  "uid",        null: false
+    t.integer  "user_id",    null: false
     t.text     "body",       null: false
     t.string   "title"
     t.datetime "created_at"
@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 20140910170550) do
 
   create_table "joined_meetups", force: true do |t|
     t.integer  "meetup_id",  null: false
-    t.integer  "uid",        null: false
+    t.integer  "user_id",    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

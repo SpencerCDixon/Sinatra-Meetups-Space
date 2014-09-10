@@ -19,7 +19,7 @@ helpers do
   end
 
   def joined_meetup?(meetup_id, user_id)
-    JoinedMeetup.find_by(meetup_id: meetup_id, uid: user_id)
+    JoinedMeetup.find_by(meetup_id: meetup_id, user_id: user_id)
   end
 end
 
@@ -42,14 +42,24 @@ end
 
 get '/meetup/:id' do
   @meetup = Meetup.find(params[:id])
-  @members = []
-  @members << JoinedMeetup.where(meetup_id: params[:id])
   erb :show
-  binding.pry
 end
 
 post '/meetup/:id/join' do
-  JoinedMeetup.create(meetup_id: params[:id], uid: current_user.uid)
+  JoinedMeetup.create(meetup_id: params[:id], user_id: current_user.id)
+  redirect "/meetup/#{params[:id]}"
+end
+
+post '/meetup/:id/leave' do
+  user = JoinedMeetup.find_by(meetup_id: params[:id], user_id: current_user.id)
+  user.delete
+  redirect "/meetup/#{params[:id]}"
+end
+
+post '/comments/:id/new' do
+  Comment.create(meetup_id: params["id"], user_id: current_user.id, body: params["body"],
+    title: params["title"])
+  binding.pry
   redirect "/meetup/#{params[:id]}"
 end
 

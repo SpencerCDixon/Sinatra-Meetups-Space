@@ -1,4 +1,4 @@
-class JoinedMeetup < ActiveRecord::Base
+class Comment < ActiveRecord::Base
   belongs_to :meetup
   belongs_to :user
 

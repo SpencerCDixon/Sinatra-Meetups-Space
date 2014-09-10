@@ -1,14 +1,27 @@
 <h1><%= @meetup.name %></h1>
-<% if joined_meetup?(params[:id], current_user.uid) %>
-  <h2>Joined!</h2>
+<% if joined_meetup?(params[:id], current_user.id) %>
+  <h3>Joined!</h3>
+  <form action="/meetup/<%= @meetup.id %>/leave" method="POST"><button style =
+    "color: black;"> Leave this meetup!</button></form>
 <% end %>
 <p><%= @meetup.description %> at <%= @meetup.location %></p>
-<form action="/meetup/<%= @meetup.id %>/join" method="POST"><button style = "color: black;"> Join this meetup!</button>
+<% if !joined_meetup?(params[:id], current_user.id) %>
+<form action="/meetup/<%= @meetup.id %>/join" method="POST"><button style = "color: black;"> Join this meetup!</button></form>
+<% end %>
+<h2>Joined Members:</h2>
+<ol>
+  <% @meetup.users.each do |user| %>
+    <li> <%= user.username %> </li>
+  <% end %>
+</ol>
 <h2>Comments</h2>
-<form action='/comments/new' method='POST'>
-  <input type='Text' name='Title' size='' placeholder='Title' >
-  <input type='Text' name='Body' size='' placeholder='Body' >
-  <button type='submit'>Submit</button>
+<form action="/comments/<%= params[:id]%>/new" method='POST'>
+  <input style = "color: black;" type='Text' name='title' size='' placeholder='Title' >
+  <input style = "color: black;" type='Text' name='body' size='' placeholder='Body' >
+  <button style = "color: black;" type='submit'>Submit</button>
 </form>
-
-<ol></ol>
+<ol>
+  <% Comment.where(meetup_id: params[:id]).each do |comment|%>
+  <li> <%= comment.user.username %> <%= comment.title %>: <%= comment.body %></li>
+  <% end %>
+</ol>

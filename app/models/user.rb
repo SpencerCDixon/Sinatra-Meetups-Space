@@ -17,4 +17,6 @@ class User < ActiveRecord::Base
   end
 
   has_many :joined_meetups
+  has_many :meetups, through: :joined_meetups
+  has_many :comments
 end
